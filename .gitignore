@@ -1,4 +1,4 @@
-- .idea/*
-- out/*
+- /.idea/*
+- /out/*
 - /shelf/
 - /workspace.xml
