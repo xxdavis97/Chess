@@ -288,10 +288,25 @@ public class Board {
         return false;
     }
 
+    private void addRowLabelsToStringBuilder(StringBuilder sb)
+    {
+        /*
+        Adds row labels 1-8 to the stringbuilder for printing the board
+         */
+        sb.append("    ");
+        for (String rowLabel : ColumnLetters.ROW_LABELS)
+        {
+            sb.append(rowLabel);
+            sb.append("   ");
+        }
+        sb.append("\n");
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         int rowCount = 0;
+        this.addRowLabelsToStringBuilder(sb);
         for (Piece[] row : this.state) {
             sb.append(ColumnLetters.COLUMN_LABELS.get(rowCount));
             sb.append("   ");
