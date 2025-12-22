@@ -4,9 +4,12 @@ import chess.api.dto.request.CreateGameRequest;
 import chess.api.dto.request.MakeMoveRequest;
 import chess.api.dto.request.PawnPromotionRequest;
 import chess.api.dto.response.*;
+import chess.api.dto.websocket.GameUpdateMessage;
+import chess.api.dto.websocket.GameUpdateType;
 import chess.api.mapper.BoardMapper;
 import chess.api.model.GameSession;
 import chess.api.service.GameSessionService;
+import chess.api.service.GameUpdatePublisher;
 import chess.api.service.LegalMovesService;
 import chess.business.Game;
 import chess.domain.enums.PieceColor;
@@ -29,13 +32,16 @@ public class GameController {
     private final GameSessionService gameSessionService;
     private final LegalMovesService legalMovesService;
     private final BoardMapper boardMapper;
+    private final GameUpdatePublisher gameUpdatePublisher;
 
     public GameController(GameSessionService gameSessionService,
                           LegalMovesService legalMovesService,
-                          BoardMapper boardMapper) {
+                          BoardMapper boardMapper,
+                          GameUpdatePublisher gameUpdatePublisher) {
         this.gameSessionService = gameSessionService;
         this.legalMovesService = legalMovesService;
         this.boardMapper = boardMapper;
+        this.gameUpdatePublisher = gameUpdatePublisher;
     }
 
     @PostMapping
@@ -71,6 +77,14 @@ public class GameController {
             lastMove = mapToMoveDTO(game.getMoveHistory().get(game.getMoveHistory().size() - 1));
         }
 
+        // Publish update to Redis (will be broadcast to all server instances)
+        GameUpdateMessage wsMessage = new GameUpdateMessage(
+            GameUpdateType.MOVE,
+            gameId,
+            gameState
+        );
+        gameUpdatePublisher.publishGameUpdate(gameId, wsMessage);
+
         MoveResponse response = new MoveResponse(true, gameState, lastMove);
         return ResponseEntity.ok(response);
     }
@@ -83,6 +97,15 @@ public class GameController {
 
         GameSession session = gameSessionService.promotePawn(gameId, square, request.getPromoteTo());
         GameStateResponse response = mapToGameStateResponse(session);
+
+        // Publish update to Redis (will be broadcast to all server instances)
+        GameUpdateMessage wsMessage = new GameUpdateMessage(
+            GameUpdateType.MOVE,
+            gameId,
+            response
+        );
+        gameUpdatePublisher.publishGameUpdate(gameId, wsMessage);
+
         return ResponseEntity.ok(response);
     }
 

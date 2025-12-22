@@ -17,4 +17,6 @@ public class MakeMoveRequest {
     @NotBlank(message = "Destination square is required")
     @Pattern(regexp = "[a-h][1-8]", message = "Invalid square notation (must be a1-h8)")
     private String to;
+
+    private String playerName; // Optional for single-player, required for multiplayer
 }

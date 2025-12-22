@@ -34,6 +34,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(GameFullException.class)
+    public ResponseEntity<ErrorResponse> handleGameFull(GameFullException ex) {
+        ErrorResponse error = new ErrorResponse("GAME_FULL", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(UnauthorizedMoveException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedMove(UnauthorizedMoveException ex) {
+        ErrorResponse error = new ErrorResponse("UNAUTHORIZED_MOVE", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(ColorAlreadyTakenException.class)
+    public ResponseEntity<ErrorResponse> handleColorAlreadyTaken(ColorAlreadyTakenException ex) {
+        ErrorResponse error = new ErrorResponse("COLOR_TAKEN", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldErrors().stream()
