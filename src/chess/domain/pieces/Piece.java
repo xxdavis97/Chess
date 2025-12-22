@@ -3,12 +3,20 @@ package chess.domain.pieces;
 import chess.domain.board.Board;
 import chess.domain.enums.PieceColor;
 import chess.utils.PieceMovement;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 
 import static chess.utils.BoardPosition.isPositionOutOfBounds;
 
-public class Piece {
+@Getter
+@Setter
+public class Piece implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private int value;
     private PieceColor color;
@@ -87,22 +95,6 @@ public class Piece {
 
     public Piece(PieceColor color) {
         this.color = color;
-    }
-
-    public PieceColor getColor() {
-        return color;
-    }
-
-    public void setColor(PieceColor color) {
-        this.color = color;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public void setValue(int value) {
-        this.value = value;
     }
 
     public String pieceColorToString() {

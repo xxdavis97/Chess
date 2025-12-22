@@ -3,10 +3,20 @@ package chess.domain.pieces;
 import chess.domain.board.Board;
 import chess.domain.enums.PieceColor;
 import chess.utils.PieceMovement;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serial;
 
 import static chess.constants.PieceValues.ROOK_VALUE;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class Rook extends Piece {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private boolean hasMoved;
 
@@ -31,13 +41,5 @@ public class Rook extends Piece {
     @Override
     public String toString() {
         return "R:" + this.pieceColorToString();
-    }
-
-    public boolean isHasMoved() {
-        return hasMoved;
-    }
-
-    public void setHasMoved(boolean hasMoved) {
-        this.hasMoved = hasMoved;
     }
 }

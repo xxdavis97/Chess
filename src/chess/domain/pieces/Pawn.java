@@ -3,10 +3,20 @@ package chess.domain.pieces;
 import chess.domain.board.Board;
 import chess.domain.enums.PieceColor;
 import chess.utils.BoardPosition;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serial;
 
 import static chess.constants.PieceValues.PAWN_VALUE;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class Pawn extends Piece {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private int BASE_MOVE = 1;
     private int DOUBLE_MOVE = 2;
@@ -114,30 +124,6 @@ public class Pawn extends Piece {
         Returns if the pawn is on the row it initially started on
          */
         return (this.getColor() == PieceColor.WHITE && row == 1) || (this.getColor() == PieceColor.BLACK && row == 6);
-    }
-
-    public boolean isCanEnpassant() {
-        return canEnpassant;
-    }
-
-    public void setCanEnpassant(boolean canEnpassant) {
-        this.canEnpassant = canEnpassant;
-    }
-
-    public boolean isPerformedEnpassant() {
-        return performedEnpassant;
-    }
-
-    public void setPerformedEnpassant(boolean performedEnpassant) {
-        this.performedEnpassant = performedEnpassant;
-    }
-
-    public int[] getEnPassantCapturePosition() {
-        return enPassantCapturePosition;
-    }
-
-    public void setEnPassantCapturePosition(int[] enPassantCapturePosition) {
-        this.enPassantCapturePosition = enPassantCapturePosition;
     }
 
     @Override

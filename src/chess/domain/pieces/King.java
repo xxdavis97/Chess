@@ -3,8 +3,18 @@ package chess.domain.pieces;
 import chess.domain.board.Board;
 import chess.domain.enums.PieceColor;
 import chess.utils.PieceMovement;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.io.Serial;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class King extends Piece {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private boolean hasMoved;
 
@@ -53,13 +63,5 @@ public class King extends Piece {
             col++;
         }
         return false;
-    }
-
-    public boolean isHasMoved() {
-        return hasMoved;
-    }
-
-    public void setHasMoved(boolean hasMoved) {
-        this.hasMoved = hasMoved;
     }
 }

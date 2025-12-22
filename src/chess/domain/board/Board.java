@@ -6,6 +6,8 @@ import chess.domain.enums.PieceColor;
 import chess.domain.pieces.*;
 import chess.utils.BoardPosition;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +16,9 @@ import static chess.domain.enums.PieceColor.EMPTY;
 import static chess.utils.BoardPosition.getPositionFromCoords;
 import static chess.utils.BoardPosition.isPositionOutOfBounds;
 
-public class Board {
+public class Board implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
     //checkmate harder, would prefer not to have to look at the isInCheck scan for every possible user move
     // (that would brute force to if always true then its mate)
 
@@ -37,6 +41,52 @@ public class Board {
         System.arraycopy(state, 0, this.state, 0, state.length);
         this.castlingHandler = new CastlingHandler();
         this.kingInCheck = EMPTY;
+    }
+
+    // Static factory method for deep copy - used for legal move analysis without affecting actual game
+    public static Board createDeepCopy(Board original) {
+        Board copy = new Board();
+
+        // Deep copy each piece with its state
+        for (int col = 0; col < 8; col++) {
+            for (int row = 0; row < 8; row++) {
+                copy.state[col][row] = copyPieceWithState(original.state[col][row]);
+            }
+        }
+
+        copy.previousBoardStateMap = new HashMap<>(original.previousBoardStateMap);
+        copy.kingInCheck = original.kingInCheck;
+        copy.winner = original.winner;
+
+        return copy;
+    }
+
+    private static Piece copyPieceWithState(Piece piece) {
+        return switch (piece) {
+            case Pawn pawn -> {
+                Pawn copy = new Pawn(piece.getColor());
+                copy.setCanEnpassant(pawn.isCanEnpassant());
+                copy.setPerformedEnpassant(pawn.isPerformedEnpassant());
+                if (pawn.getEnPassantCapturePosition() != null) {
+                    copy.setEnPassantCapturePosition(pawn.getEnPassantCapturePosition().clone());
+                }
+                yield copy;
+            }
+            case King king -> {
+                King copy = new King(piece.getColor());
+                copy.setHasMoved(king.isHasMoved());
+                yield copy;
+            }
+            case Rook rook -> {
+                Rook copy = new Rook(piece.getColor());
+                copy.setHasMoved(rook.isHasMoved());
+                yield copy;
+            }
+            case Queen q -> new Queen(piece.getColor());
+            case Bishop b -> new Bishop(piece.getColor());
+            case Knight k -> new Knight(piece.getColor());
+            default -> new Piece();
+        };
     }
 
     public Piece[][] getState() {

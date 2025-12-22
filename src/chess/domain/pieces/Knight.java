@@ -3,10 +3,16 @@ package chess.domain.pieces;
 import chess.domain.board.Board;
 import chess.domain.enums.PieceColor;
 import chess.utils.PieceMovement;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
 
 import static chess.constants.PieceValues.PIECE_VALUE;
 
+@NoArgsConstructor
 public class Knight extends Piece {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public Knight(PieceColor color) {
         super(color);

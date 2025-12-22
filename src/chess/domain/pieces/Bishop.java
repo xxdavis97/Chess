@@ -3,8 +3,14 @@ package chess.domain.pieces;
 import chess.domain.board.Board;
 import chess.domain.enums.PieceColor;
 import chess.utils.PieceMovement;
+import lombok.NoArgsConstructor;
 
+import java.io.Serial;
+
+@NoArgsConstructor
 public class Bishop extends Piece {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public Bishop(PieceColor color) {
         super(color);
