@@ -164,7 +164,7 @@ public class GameController {
         response.setGameId(session.getGameId());
         response.setBoard(boardState);
         response.setCurrentTurn(game.getTurn());
-        response.setGameResult(null); // Would need to track this in session
+        response.setGameResult(game.getGameResult());
         response.setKingInCheck(kingInCheck);
         response.setWinner(winner);
         response.setAwaitingPawnPromotion(awaitingPromotion);

@@ -22,11 +22,13 @@ public class Game implements Serializable {
     private Board board;
     private PieceColor turn;
     private List<Move> moveHistory;
+    private GameResult gameResult;
 
     public Game() {
         this.board = new Board();
         this.turn = PieceColor.WHITE;
         this.moveHistory = new ArrayList<>();
+        this.gameResult = GameResult.CONTINUE;
     }
 
     public int[] userInputToPosition(String userInput) {
@@ -83,6 +85,7 @@ public class Game implements Serializable {
         move.setCheckmate(moveResult == GameResult.CHECKMATE);
 
         this.moveHistory.add(move);
+        this.gameResult = moveResult;
         this.turn = PieceColor.getInverseColor(this.turn);
         return moveResult;
     }
@@ -145,5 +148,20 @@ public class Game implements Serializable {
 
     public List<Move> getMoveHistory() {
         return moveHistory;
+    }
+
+    public GameResult getGameResult() {
+        // Handle backwards compatibility for games loaded from Redis before gameResult field was added
+        if (gameResult == null) {
+            // Infer game result from board state
+            if (board.getWinner() != PieceColor.EMPTY) {
+                return GameResult.CHECKMATE;
+            } else if (board.getKingInCheck() != PieceColor.EMPTY) {
+                return GameResult.CONTINUE; // In check but not mate
+            } else {
+                return GameResult.CONTINUE;
+            }
+        }
+        return gameResult;
     }
 }
